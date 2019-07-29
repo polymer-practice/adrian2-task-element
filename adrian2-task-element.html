@@ -6,6 +6,9 @@
     <style>
       :host {
         display: block;
+        --task-element-primary-color: var(--primary-color, blue);
+        --task-element-done-color: var(--done-color, green);
+        --task-element-cancel-color: var(--cancel-color, red);
       }
 
       .task-element {
@@ -17,8 +20,23 @@
       .bullet {
         margin-right: 5px;
       }
+
+      .pending {
+        color: var(--task-element-primary-color);
+      }
+
+      .done {
+        text-decoration: line-through;
+        color: var(--task-element-done-color);
+      }
+
+      .cancel {
+        text-decoration: line-through;
+        color: var(--task-element-cancel-color);
+      }
+
     </style>
-    <div class="task-element">
+    <div class="task-element" class$="[[state]]">
       <iron-icon icon="icons:radio-button-checked" class="bullet"></iron-icon>
       <span class="title">[[title]]</span>
     </div>
@@ -30,8 +48,29 @@
       static get properties() {
         return {
           title: String,
-          key: Number
+          key: Number,
+          cancel: Boolean,
+          done: Boolean,
+          state: {
+            type: String,
+            value: 'pending',
+            computed: 'getState(done,cancel)'
+          }
         };
+      }
+
+      getState(done, cancel) {
+        let result = 'pending';
+
+        if (cancel) {
+          result='cancel'
+        }
+
+        if (done) {
+          result='done';
+        }
+
+        return result;
       }
     }
 
