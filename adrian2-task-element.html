@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <dom-module id="adrian2-task-element">
   <template>
@@ -6,27 +7,30 @@
       :host {
         display: block;
       }
+
+      .task-element {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .bullet {
+        margin-right: 5px;
+      }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <div class="task-element">
+      <iron-icon icon="icons:radio-button-checked" class="bullet"></iron-icon>
+      <span class="title">[[title]]</span>
+    </div>
   </template>
 
   <script>
-    /**
-     * `adrian2-task-element`
-     * 
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
     class Adrian2TaskElement extends Polymer.Element {
       static get is() { return 'adrian2-task-element'; }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'adrian2-task-element'
-          }
+          title: String,
+          key: Number
         };
       }
     }
