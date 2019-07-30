@@ -1,5 +1,5 @@
-<link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../polymer/polymer-element.html" />
+<link rel="import" href="../iron-icons/iron-icons.html" />
 
 <dom-module id="adrian2-task-element">
   <template>
@@ -44,35 +44,39 @@
         color: var(--task-element-cancel-color);
       }
 
-    .btn {
-      height: var(--task-element-height-btn);
-      width: var(--task-element-width-btn);
-      color: white;
-      border-radius: 4px;
-    }
+      .btn {
+        height: var(--task-element-height-btn);
+        width: var(--task-element-width-btn);
+        color: white;
+        border-radius: 4px;
+      }
 
-    .btn-pending {
-      background-color: var(--task-element-primary-color);
-    }
+      .btn-pending {
+        background-color: var(--task-element-primary-color);
+      }
 
-    .btn-done {
-      background-color: var(--task-element-done-color);
-    }
+      .btn-done {
+        background-color: var(--task-element-done-color);
+      }
 
-    .btn-cancel {
-      background-color: var(--task-element-cancel-color);
-    }
-
-    @media(min-width: 600px) {
-      .task-element {
-        flex-direction: row;
+      .btn-cancel {
+        background-color: var(--task-element-cancel-color);
       }
 
       .button-set {
-        margin-left: auto;
+        display: flex;
+        align-items: center;
       }
-    }
 
+      @media (min-width: 600px) {
+        .task-element {
+          flex-direction: row;
+        }
+
+        .button-set {
+          margin-left: auto;
+        }
+      }
     </style>
     <div class="task-element">
       <div class$="task-desc [[state]]">
@@ -80,16 +84,30 @@
         <span class="title">[[title]]</span>
       </div>
       <span class="button-set">
-        <button type="button" name="pending" on-click="onButton" class="btn btn-pending">Set pending</button>
-        <button type="button" name="done" on-click="onButton" class="btn btn-done">Set done</button>
-        <button type="button" name="cancel" on-click="onButton" class="btn btn-cancel">Set cancel</button>
+        <template is="dom-if" if="[[showPending]]">
+          <button type="button" name="pending" on-click="(onButton)" class="btn btn-pending">
+            Set pending
+          </button>
+        </template>
+        <template is="dom-if" if="[[showDone]]">
+          <button type="button" name="done" on-click="(onButton)" class="btn btn-done">
+            Set done
+          </button>
+        </template>
+        <template is="dom-if" if="[[showCancel]]">
+          <button type="button" name="cancel" on-click="(onButton)" class="btn btn-cancel">
+            Set cancel
+          </button>
+        </template>
       </span>
     </div>
   </template>
 
   <script>
     class Adrian2TaskElement extends Polymer.Element {
-      static get is() { return 'adrian2-task-element'; }
+      static get is() {
+        return "adrian2-task-element";
+      }
       static get properties() {
         return {
           title: String,
@@ -98,54 +116,75 @@
           done: Boolean,
           state: {
             type: String,
-            value: 'pending',
-            computed: 'getState(done,cancel)'
+            value: "pending",
+            computed: "getState(done,cancel)"
+          },
+          showPending: {
+            type: Boolean,
+            computed: "shouldShowPending(state)"
+          },
+          showDone: {
+            type: Boolean,
+            computed: "shouldShowDone(state)"
+          },
+          showCancel: {
+            type: Boolean,
+            computed: "shouldShowCancel(state)"
           }
         };
       }
 
+      shouldShowPending(state) {
+        return state !== "pending";
+      }
+
+      shouldShowDone(state) {
+        return state !== "done";
+      }
+
+      shouldShowCancel(state) {
+        return state !== "cancel";
+      }
+
       getState(done, cancel) {
-        let result = 'pending';
+        let result = "pending";
 
         if (cancel) {
-          result='cancel'
+          result = "cancel";
         }
 
         if (done) {
-          result='done';
+          result = "done";
         }
 
         return result;
       }
 
-      onButton (event) {
-        const buttonType = event.target.getAttribute('name');
+      onButton(event) {
+        const buttonType = event.target.getAttribute("name");
 
         let typeCustomEvent;
-        let customEvent
+        let customEvent;
 
-        switch(buttonType) {
-          case 'pending':
-            typeCustomEvent = 'pending-event';
-          break;
-          case 'done':
-            typeCustomEvent = 'done-event';
-          break;
-          case 'cancel':
-            typeCustomEvent = 'cancel-event';
-          break;
+        switch (buttonType) {
+          case "pending":
+            typeCustomEvent = "pending-event";
+            break;
+          case "done":
+            typeCustomEvent = "done-event";
+            break;
+          case "cancel":
+            typeCustomEvent = "cancel-event";
+            break;
         }
 
-        customEvent = new CustomEvent(
-          typeCustomEvent,
-          {
-            bubbles: true,
-            composed: true,
-            detail: {
-              key: this.key
-            }
+        customEvent = new CustomEvent(typeCustomEvent, {
+          bubbles: true,
+          composed: true,
+          detail: {
+            key: this.key
           }
-        );
+        });
 
         this.dispatchEvent(customEvent);
       }
