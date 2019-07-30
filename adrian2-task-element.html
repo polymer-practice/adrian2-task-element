@@ -9,12 +9,21 @@
         --task-element-primary-color: var(--primary-color, blue);
         --task-element-done-color: var(--done-color, green);
         --task-element-cancel-color: var(--cancel-color, red);
+        --task-element-height-btn: var(--height-btn, 35px);
+        --task-element-width-btn: var(--width-btn, 80px);
       }
 
       .task-element {
         display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .task-desc {
+        display: flex;
         justify-content: flex-start;
         align-items: center;
+        padding: 5px 0px;
       }
 
       .bullet {
@@ -35,10 +44,46 @@
         color: var(--task-element-cancel-color);
       }
 
+    .btn {
+      height: var(--task-element-height-btn);
+      width: var(--task-element-width-btn);
+      color: white;
+      border-radius: 4px;
+    }
+
+    .btn-pending {
+      background-color: var(--task-element-primary-color);
+    }
+
+    .btn-done {
+      background-color: var(--task-element-done-color);
+    }
+
+    .btn-cancel {
+      background-color: var(--task-element-cancel-color);
+    }
+
+    @media(min-width: 600px) {
+      .task-element {
+        flex-direction: row;
+      }
+
+      .button-set {
+        margin-left: auto;
+      }
+    }
+
     </style>
-    <div class="task-element" class$="[[state]]">
-      <iron-icon icon="icons:radio-button-checked" class="bullet"></iron-icon>
-      <span class="title">[[title]]</span>
+    <div class="task-element">
+      <div class$="task-desc [[state]]">
+        <iron-icon icon="icons:radio-button-checked" class="bullet"></iron-icon>
+        <span class="title">[[title]]</span>
+      </div>
+      <span class="button-set">
+        <button type="button" name="pending" on-click="onButton" class="btn btn-pending">Set pending</button>
+        <button type="button" name="done" on-click="onButton" class="btn btn-done">Set done</button>
+        <button type="button" name="cancel" on-click="onButton" class="btn btn-cancel">Set cancel</button>
+      </span>
     </div>
   </template>
 
@@ -71,6 +116,38 @@
         }
 
         return result;
+      }
+
+      onButton (event) {
+        const buttonType = event.target.getAttribute('name');
+
+        let typeCustomEvent;
+        let customEvent
+
+        switch(buttonType) {
+          case 'pending':
+            typeCustomEvent = 'pending-event';
+          break;
+          case 'done':
+            typeCustomEvent = 'done-event';
+          break;
+          case 'cancel':
+            typeCustomEvent = 'cancel-event';
+          break;
+        }
+
+        customEvent = new CustomEvent(
+          typeCustomEvent,
+          {
+            bubbles: true,
+            composed: true,
+            detail: {
+              key: this.key
+            }
+          }
+        );
+
+        this.dispatchEvent(customEvent);
       }
     }
 
