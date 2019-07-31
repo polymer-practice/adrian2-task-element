@@ -85,17 +85,17 @@
       </div>
       <span class="button-set">
         <template is="dom-if" if="[[showPending]]">
-          <button type="button" name="pending" on-click="(onButton)" class="btn btn-pending">
+          <button type="button" name="pending" on-click="onButton" class="btn btn-pending">
             Set pending
           </button>
         </template>
         <template is="dom-if" if="[[showDone]]">
-          <button type="button" name="done" on-click="(onButton)" class="btn btn-done">
+          <button type="button" name="done" on-click="onButton" class="btn btn-done">
             Set done
           </button>
         </template>
         <template is="dom-if" if="[[showCancel]]">
-          <button type="button" name="cancel" on-click="(onButton)" class="btn btn-cancel">
+          <button type="button" name="cancel" on-click="onButton" class="btn btn-cancel">
             Set cancel
           </button>
         </template>
